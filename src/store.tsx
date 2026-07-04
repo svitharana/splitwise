@@ -26,6 +26,8 @@ interface TrackingStore {
   removeUser: (id: string) => void;
   getUser: (id: string) => string;
   addExpense: (expense: Omit<Expense, "id">) => void;
+  removeExpense: (id: string) => void;
+  editExpense: (expense: Expense) => void;
 }
 export const useTrackingStore = create<TrackingStore>()(
   persist(
@@ -38,7 +40,7 @@ export const useTrackingStore = create<TrackingStore>()(
         })),
       removeUser: (id) =>
         set((state) => ({
-          users: state.users.filter((user) => user.id != id),
+          users: state.users.filter((user) => user.id !== id),
         })),
       getUser: (id) => {
         const { users } = get();
@@ -51,6 +53,20 @@ export const useTrackingStore = create<TrackingStore>()(
             { ...expense, id: crypto.randomUUID() },
           ],
         })),
+      removeExpense: (id) =>
+        set((state) => ({
+          expenses: state.expenses.filter((expense) => expense.id !== id),
+        })),
+      editExpense: (updatedExpense) => {
+        set((state) => ({
+          expenses: state.expenses.map((expense) => {
+            if (expense.id === updatedExpense.id) {
+              return updatedExpense;
+            }
+            return expense;
+          }),
+        }));
+      },
     }),
     { name: "budget-tracking-storage" },
   ),

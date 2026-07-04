@@ -6,6 +6,8 @@ import { useState } from "react";
 export default function Group() {
   const { users, addUser } = useTrackingStore();
   const [value, setValue] = useState<string>("");
+  let [isOpen, setIsOpen] = useState<boolean>(false);
+
   return (
     <div className="mx-5">
       <div className="mt-5 ">
