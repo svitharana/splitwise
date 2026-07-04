@@ -24,6 +24,7 @@ interface TrackingStore {
   expenses: Expense[];
   addUser: (name: string) => void;
   removeUser: (id: string) => void;
+  updateUser: (user: User) => void;
   getUser: (id: string) => string;
   addExpense: (expense: Omit<Expense, "id">) => void;
   removeExpense: (id: string) => void;
@@ -42,6 +43,17 @@ export const useTrackingStore = create<TrackingStore>()(
         set((state) => ({
           users: state.users.filter((user) => user.id !== id),
         })),
+      updateUser: (updatedUser) => {
+        set((state) => ({
+          users: state.users.map((user) => {
+            if (user.id === updatedUser.id) {
+              return updatedUser;
+            } else {
+              return user;
+            }
+          }),
+        }));
+      },
       getUser: (id) => {
         const { users } = get();
         return users.find((user) => user.id === id)?.name || "";

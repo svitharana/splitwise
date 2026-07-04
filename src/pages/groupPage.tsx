@@ -1,7 +1,8 @@
-import { Plus } from "lucide-react";
+import { UserRoundPlus } from "lucide-react";
 import { useTrackingStore } from "../store";
 import UserDetails from "../components/userDetails";
 import { useState } from "react";
+import UserDialog from "../components/userDialog";
 
 export default function Group() {
   const { users, addUser } = useTrackingStore();
@@ -11,29 +12,26 @@ export default function Group() {
   return (
     <div className="mx-5">
       <div className="mt-5 ">
-        <input
-          required
+        <UserDialog
+          title="Add User"
           value={value}
-          placeholder="Name"
-          className=" w-full mb-4 text-2xl py-2 px-1"
-          onChange={(e) => setValue(e.target.value)}
-        ></input>
-        <button
-          onClick={() => {
-            addUser(value);
-            setValue("");
-          }}
-          className="flex w-full items-center justify-center gap-2 bg-blue-700 rounded-2xl text-xl text-white font-medium py-2"
-        >
-          <Plus size={32} strokeWidth={3} className="text-xl" />
-          <span>Add User</span>
-        </button>
+          onInputChange={setValue}
+          handleUser={addUser}
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+        />
       </div>
       <main className=" mt-10">
         {users.map((user) => (
           <UserDetails name={user.name} id={user.id} />
         ))}
       </main>
+      <button
+        className="fixed bottom-15 text-white bg-blue-500 rounded-full p-2 right-0  mr-5 mb-5 shadow-lg shadow-blue-200"
+        onClick={() => setIsOpen(true)}
+      >
+        <UserRoundPlus className="pl-2 pb-2 pt-1 pr-1" size={48} />
+      </button>
     </div>
   );
 }

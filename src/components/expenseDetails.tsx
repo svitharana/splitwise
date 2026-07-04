@@ -25,13 +25,13 @@ export default function ExpenseDetails(expense: Expense) {
         <div className="flex flex-row gap-2">
           <Link to={`/expenses/edit/${expense.id}`}>
             <Pencil
-              size={44}
+              size={36}
               className="text-green-800 bg-green-100 p-2 rounded-lg"
             />
           </Link>
           <Trash2
             onClick={() => removeExpense(expense.id)}
-            size={44}
+            size={36}
             className="text-red-800 bg-red-100 p-2 rounded-lg"
           />
         </div>

@@ -19,7 +19,6 @@ export default function Expenses() {
         ))}
       </div>
       <button
-        disabled={true}
         className="fixed bottom-15 text-white bg-blue-500 rounded-full p-2 right-0  mr-5 mb-5 shadow-lg shadow-blue-200"
         onClick={() => navigate("/expenses/new")}
       >
