@@ -1,6 +1,5 @@
 import { UserRound, UserRoundPen, X } from "lucide-react";
 import { useTrackingStore, type User } from "../store";
-import { useState } from "react";
 
 interface DialogProps {
   onTriggerEdit: (isEdit: boolean, user: User) => void;
@@ -10,7 +9,6 @@ type Props = User & DialogProps;
 
 export default function UserDetails({ name, id, onTriggerEdit }: Props) {
   const removeUser = useTrackingStore((state) => state.removeUser);
-  const [value, setValue] = useState<string>("");
 
   return (
     <div className="w-full max-w-md px-3 py-4 flex justify-between items-center border border-gray-200 rounded-lg shadow-sm my-3">
@@ -23,7 +21,7 @@ export default function UserDetails({ name, id, onTriggerEdit }: Props) {
       </div>
       <div className="flex gap-4 ">
         <UserRoundPen
-          onClick={() => onTriggerEdit(true, {id: id, name: name})}
+          onClick={() => onTriggerEdit(true, { id: id, name: name })}
           className="text-green-800 bg-green-100 p-2 rounded-lg"
           size={36}
         />

@@ -50,7 +50,6 @@ export default function ExpenseForm() {
 
   return (
     <div className="flex flex-col bg-gray-50 ">
-      {/* Header */}
       <div className="border-b border-gray-200 py-4 px-4  flex justify-center items-center">
         <h1 className="font-medium text-lg">
           {id ? "Edit Expense" : "New Expense"}

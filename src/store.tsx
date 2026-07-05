@@ -22,13 +22,17 @@ export interface Expense {
 interface TrackingStore {
   users: User[];
   expenses: Expense[];
+
   addUser: (name: string) => void;
   removeUser: (id: string) => void;
   updateUser: (user: User) => void;
   getUser: (id: string) => string;
+
   addExpense: (expense: Omit<Expense, "id">) => void;
   removeExpense: (id: string) => void;
   editExpense: (expense: Expense) => void;
+
+  getTotalExpenses: () => number;
 }
 export const useTrackingStore = create<TrackingStore>()(
   persist(
@@ -78,6 +82,11 @@ export const useTrackingStore = create<TrackingStore>()(
             return expense;
           }),
         }));
+      },
+      getTotalExpenses: () => {
+        const expenses = get().expenses;
+        const totalExpenses = expenses.flatMap((exp) => exp.amount);
+        return totalExpenses.reduce((acc, curr) => acc + curr, 0);
       },
     }),
     { name: "budget-tracking-storage" },

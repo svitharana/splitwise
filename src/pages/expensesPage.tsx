@@ -4,13 +4,17 @@ import { useTrackingStore } from "../store";
 import { useNavigate } from "react-router-dom";
 
 export default function Expenses() {
-  const expenses = useTrackingStore((state) => state.expenses);
+  const { expenses, getTotalExpenses } = useTrackingStore();
   const navigate = useNavigate();
   return (
     <div className="px-4">
-      <div className="flex flex-col items-center my-5 border mx-6 rounded-lg py-5">
-        <span className="uppercase text-sm ">Total Group Spending</span>
-        <span className="font-extrabold text-3xl">Rs.123,000</span>
+      <div className="flex flex-col items-center my-6 mx-6 p-6 shadow-lg rounded-3xl border-3 border-blue-500">
+        <span className="text-sm font-medium tracking-widest text-slate-700 uppercase">
+          Total Group Spending
+        </span>
+        <span className="mt-1 text-3xl font-black ">
+          Rs. {getTotalExpenses().toLocaleString()}
+        </span>
       </div>
       <span className="font-medium">Expense History</span>
       <div>

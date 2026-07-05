@@ -21,7 +21,9 @@ export default function ExpenseDetails(expense: Expense) {
       </div>
 
       <div className="flex flex-col items-end gap-3 shrink-0">
-        <span className="font-bold text-lg">Rs. {expense.amount}</span>
+        <span className="font-bold text-lg">
+          Rs. {expense.amount.toLocaleString()}
+        </span>
         <div className="flex flex-row gap-2">
           <Link to={`/expenses/edit/${expense.id}`}>
             <Pencil

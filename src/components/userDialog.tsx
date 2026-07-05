@@ -4,6 +4,7 @@ import {
   DialogTitle,
   DialogBackdrop,
 } from "@headlessui/react";
+import { useState } from "react";
 
 interface Props {
   title: string;
@@ -22,6 +23,7 @@ export default function UserDialog({
   isOpen,
   setIsOpen,
 }: Props) {
+  const [validationError, setValidationError] = useState<string | null>(null);
   return (
     <Dialog
       open={isOpen}
@@ -33,7 +35,7 @@ export default function UserDialog({
       <div className="fixed inset-0 left-10 right-10">
         <div className="flex min-h-full items-center justify-center ">
           <DialogPanel className="w-full rounded-xl bg-white p-6 ">
-            <DialogTitle as="h3" className="font-medium text-center">
+            <DialogTitle as="h3" className="font-medium text-center text-lg ">
               {title}
             </DialogTitle>
             <input
@@ -47,7 +49,7 @@ export default function UserDialog({
             <div className="mt-4 flex justify-center">
               <button
                 type="button"
-                className="w-1/2 bg-blue-600 active:bg-blue-700 text-white py-3 rounded-xl font-semibold transition-colors text-base"
+                className="w-full bg-blue-600 active:bg-blue-700 text-white py-3 rounded-xl font-medium "
                 onClick={() => {
                   setIsOpen(false);
                   handleUser(value);
