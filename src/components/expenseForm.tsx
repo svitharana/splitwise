@@ -5,7 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useTrackingStore, type PayerDetails } from "../store";
 
 export default function ExpenseForm() {
-  const { addExpense, editExpense } = useTrackingStore(); // NOT FOR EDITING
+  const { addExpense, editExpense } = useTrackingStore();
 
   const expenses = useTrackingStore((state) => state.expenses);
 
@@ -80,7 +80,7 @@ export default function ExpenseForm() {
               inputMode="decimal"
               className="w-full py-2.5 pl-11 pr-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-base"
               placeholder="0.00"
-              value={totalAmount}
+              value={totalAmount === 0 ? "" : totalAmount}
               onChange={(e) => setTotalAmount(Number(e.target.value))}
             />
           </div>

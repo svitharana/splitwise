@@ -22,9 +22,9 @@ export default function PayerForm({
     <form className="flex flex-row gap-3 items-center px-2 py-2">
       <Select
         className="w-[50%] rounded-xl"
+        placeholder="Payee"
         isSearchable={false}
-        placeholder="Payer..."
-        value={{ label: getUser(payerId), value: payerId }}
+        value={payerId ? { label: getUser(payerId), value: payerId } : null}
         options={users.map((user) => ({
           value: user.id,
           label: user.name,
@@ -45,10 +45,12 @@ export default function PayerForm({
           Rs.
         </span>
         <input
-          value={amount}
+          type="number"
+          inputMode="decimal"
+          placeholder="0.00"
+          value={amount === 0 ? "" : amount}
           className="w-full py-2 pl-11 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
           onChange={(e) => onAmountUpdate(Number(e.target.value))}
-          placeholder="Amount"
         ></input>
       </div>
       <X
