@@ -4,6 +4,12 @@ import PayerForm from "./payerForm";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTrackingStore, type PayerDetails } from "../store";
 
+interface FormErrors {
+  description: boolean;
+  amount: boolean;
+  payers: boolean;
+}
+
 export default function ExpenseForm() {
   const { addExpense, editExpense } = useTrackingStore();
 
@@ -16,6 +22,23 @@ export default function ExpenseForm() {
   const addPayer = () => setPayers([...payers, { userId: "", amountPaid: 0 }]);
   const removePayer = (id: string) =>
     setPayers(payers.filter((payer) => payer.userId !== id));
+
+  const [errors, setErrors] = useState<FormErrors>({
+    description: false,
+    amount: false,
+    payers: false,
+  });
+
+  const onValidationCheck = () => {
+    const formErrors: FormErrors = {
+      description: description.trim() === "",
+      amount: totalAmount < 0 || !totalAmount,
+      payers: payers.length === 0,
+    };
+
+    setErrors(formErrors);
+    return !Object.values(formErrors).includes(true);
+  };
 
   const { id } = useParams();
 
@@ -48,6 +71,23 @@ export default function ExpenseForm() {
     setPayers(updatedPayers);
   };
 
+  const handleOnSubmit = () => {
+    if (id) {
+      editExpense({
+        id: id,
+        description: description,
+        amount: totalAmount,
+        payers: payers,
+      });
+    } else {
+      addExpense({
+        description: description,
+        amount: totalAmount,
+        payers: payers,
+      });
+    }
+    navigate(-1);
+  };
   return (
     <div className="flex flex-col bg-gray-50 ">
       <div className="border-b border-gray-200 py-4 px-4  flex justify-center items-center">
@@ -61,11 +101,23 @@ export default function ExpenseForm() {
           <label className="text-sm font-semibold ">Description</label>
           <input
             type="text"
-            className="w-full py-2.5 px-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+            onBlur={onValidationCheck}
+            className={`w-full py-2.5 px-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none ${
+              errors.description
+                ? "ring-2 ring-red-500 bg-red-50/30"
+                : "focus:ring-2 focus:ring-blue-500"
+            } focus:border-transparent transition-all`}
             placeholder="e.g., Dinner, Grocery"
             value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            onChange={(e) => {
+              setDescription(e.target.value);
+            }}
           />
+          {errors.description && (
+            <span className="text-xs font-medium text-red-500">
+              Description cannot be empty
+            </span>
+          )}
         </div>
 
         <div className="flex flex-col gap-2">
@@ -75,14 +127,26 @@ export default function ExpenseForm() {
               Rs.
             </span>
             <input
+              onBlur={onValidationCheck}
               type="number"
               inputMode="decimal"
-              className="w-full py-2.5 pl-11 pr-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-base"
+              className={`w-full py-2.5 pl-11 pr-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none ${
+                errors.amount
+                  ? "ring-2 ring-red-500 bg-red-50/30"
+                  : "focus:ring-2 focus:ring-blue-500"
+              } focus:border-transparent transition-all text-base`}
               placeholder="0.00"
               value={totalAmount === 0 ? "" : totalAmount}
-              onChange={(e) => setTotalAmount(Number(e.target.value))}
+              onChange={(e) => {
+                setTotalAmount(Number(e.target.value));
+              }}
             />
           </div>
+          {errors.amount && (
+            <span className="text-xs font-medium text-red-500">
+              Should be a valid amount
+            </span>
+          )}
         </div>
 
         <div className="mt-4 flex flex-col gap-3">
@@ -97,6 +161,11 @@ export default function ExpenseForm() {
               <span>Add</span>
             </button>
           </div>
+          {errors.payers && (
+            <span className="text-xs font-medium text-red-500">
+              Should be atleast 1 payer
+            </span>
+          )}
 
           <div className="flex flex-col gap-3">
             {payers?.map((payer, index) => (
@@ -129,25 +198,14 @@ export default function ExpenseForm() {
         >
           Cancel
         </button>
+
         <button
           type="button"
           className="w-1/2 bg-blue-600 active:bg-blue-700 text-white py-3 rounded-xl font-semibold transition-colors text-base"
           onClick={() => {
-            if (id) {
-              editExpense({
-                id: id,
-                description: description,
-                amount: totalAmount,
-                payers: payers,
-              });
-            } else {
-              addExpense({
-                description: description,
-                amount: totalAmount,
-                payers: payers,
-              });
+            if (onValidationCheck()) {
+              handleOnSubmit();
             }
-            navigate(-1);
           }}
         >
           {id ? "Update" : "Add Expense"}
