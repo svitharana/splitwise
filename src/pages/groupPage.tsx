@@ -20,7 +20,6 @@ export default function Group() {
 
   return (
     <div className="mx-5">
-      <div className="mt-5 "></div>
       <main className=" mt-10">
         {users.map((user) => (
           <UserDetails

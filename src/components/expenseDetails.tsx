@@ -7,11 +7,16 @@ export default function ExpenseDetails(expense: Expense) {
   const removeExpense = useTrackingStore((state) => state.removeExpense);
 
   return (
-    <div className="bg-white border border-gray-200 shadow-sm rounded-xl my-2 p-4 flex items-center justify-between">
+    <div className=" border-l-3 border-l-blue-500 bg-white border border-gray-200 shadow-sm rounded-xl my-2 p-4 flex items-center justify-between">
       <div className="flex flex-col gap-2 pr-2 max-w-[65%]">
         <span className="uppercase font-bold tracking-wider text-md wrap-break-words">
-          {expense.description}
+          {expense.category}
         </span>
+        {expense.description && (
+          <span className="text-gray-400 font-medium">
+            {expense.description}
+          </span>
+        )}
         <span className="text-gray-500 text-sm font-medium italic">
           Paid by:{" "}
           <span className="text-gray-700">

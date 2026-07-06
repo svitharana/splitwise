@@ -3,11 +3,15 @@ import { useEffect, useState } from "react";
 import PayerForm from "./payerForm";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTrackingStore, type PayerDetails } from "../store";
+import ErrorForm from "./errorForm";
+import Select from "react-select/creatable";
+import { Textarea } from "@headlessui/react";
 
 interface FormErrors {
-  description: boolean;
+  category: boolean;
   amount: boolean;
   payers: boolean;
+  payerTotal: boolean;
 }
 
 export default function ExpenseForm() {
@@ -17,23 +21,43 @@ export default function ExpenseForm() {
 
   const [description, setDescription] = useState<string>("");
   const [totalAmount, setTotalAmount] = useState<number>(0);
+  const [category, setCategory] = useState<string>("");
+  const [categories, setCategories] = useState<string[]>([
+    "Ride",
+    "Grocery",
+    "Food",
+    "Dinner",
+  ]);
 
   const [payers, setPayers] = useState<PayerDetails[]>([]);
-  const addPayer = () => setPayers([...payers, { userId: "", amountPaid: 0 }]);
-  const removePayer = (id: string) =>
-    setPayers(payers.filter((payer) => payer.userId !== id));
 
   const [errors, setErrors] = useState<FormErrors>({
-    description: false,
+    category: false,
     amount: false,
     payers: false,
+    payerTotal: false,
   });
+
+  const addPayer = () =>
+    setPayers([
+      ...payers,
+      {
+        userId: "",
+        amountPaid: 0,
+      },
+    ]);
+  const removePayer = (index: number) =>
+    setPayers(payers.filter((_, i) => i != index));
 
   const onValidationCheck = () => {
     const formErrors: FormErrors = {
-      description: description.trim() === "",
+      category: category === "",
       amount: totalAmount < 0 || !totalAmount,
       payers: payers.length === 0,
+      payerTotal:
+        payers
+          .flatMap((payer) => payer.amountPaid)
+          .reduce((arr, curr) => arr + curr, 0) !== totalAmount,
     };
 
     setErrors(formErrors);
@@ -75,6 +99,7 @@ export default function ExpenseForm() {
     if (id) {
       editExpense({
         id: id,
+        category: category,
         description: description,
         amount: totalAmount,
         payers: payers,
@@ -82,6 +107,7 @@ export default function ExpenseForm() {
     } else {
       addExpense({
         description: description,
+        category: category,
         amount: totalAmount,
         payers: payers,
       });
@@ -98,26 +124,36 @@ export default function ExpenseForm() {
 
       <div className="flex flex-col p-4 gap-4">
         <div className="flex flex-col gap-2">
-          <label className="text-sm font-semibold ">Description</label>
-          <input
-            type="text"
+          <label className="text-sm font-semibold ">Category</label>
+          <Select
             onBlur={onValidationCheck}
-            className={`w-full py-2.5 px-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none ${
-              errors.description
+            isClearable
+            className={`w-full border border-gray-300 rounded-xl shadow-sm focus:outline-none ${
+              errors.category
                 ? "ring-2 ring-red-500 bg-red-50/30"
                 : "focus:ring-2 focus:ring-blue-500"
-            } focus:border-transparent transition-all`}
+            } focus:border-transparent transition-all text-base`}
             placeholder="e.g., Dinner, Grocery"
-            value={description}
-            onChange={(e) => {
-              setDescription(e.target.value);
+            value={category ? { label: category, value: category } : null}
+            onCreateOption={(option) => setCategories([...categories, option])}
+            options={categories.map((category) => ({
+              value: category.toLowerCase(),
+              label: category,
+            }))}
+            onChange={(category) => {
+              setCategory(category?.label || "");
+            }}
+            styles={{
+              control: (base) => ({
+                ...base,
+                borderRadius: "0.75rem",
+                paddingTop: "2px",
+                paddingBottom: "2px",
+                borderColor: "#d1d5db",
+              }),
             }}
           />
-          {errors.description && (
-            <span className="text-xs font-medium text-red-500">
-              Description cannot be empty
-            </span>
-          )}
+          {errors.category && <ErrorForm errorMsg="Please select a category" />}
         </div>
 
         <div className="flex flex-col gap-2">
@@ -143,10 +179,22 @@ export default function ExpenseForm() {
             />
           </div>
           {errors.amount && (
-            <span className="text-xs font-medium text-red-500">
-              Should be a valid amount
-            </span>
+            <ErrorForm errorMsg="Please enter a valid amount" />
           )}
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-semibold ">Description</label>
+          <Textarea
+            onBlur={onValidationCheck}
+            className="w-full py-2.5 px-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+            placeholder="Additional Information"
+            value={description}
+            onChange={(e) => {
+              setDescription(e.target.value);
+            }}
+            rows={3}
+          />
         </div>
 
         <div className="mt-4 flex flex-col gap-3">
@@ -162,9 +210,10 @@ export default function ExpenseForm() {
             </button>
           </div>
           {errors.payers && (
-            <span className="text-xs font-medium text-red-500">
-              Should be atleast 1 payer
-            </span>
+            <ErrorForm errorMsg="There should be atleast 1 payer" />
+          )}
+          {errors.payerTotal && !errors.payers && (
+            <ErrorForm errorMsg="The total amount does not equal to the sum of individual payer amount" />
           )}
 
           <div className="flex flex-col gap-3">
@@ -174,7 +223,7 @@ export default function ExpenseForm() {
                 className="bg-white p-2 border border-gray-200 rounded-xl shadow-sm"
               >
                 <PayerForm
-                  onRemovePayer={removePayer}
+                  onRemovePayer={() => removePayer(index)}
                   payerId={payer.userId}
                   amount={payer.amountPaid}
                   onUserUpdate={(userId) =>

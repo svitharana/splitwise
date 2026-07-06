@@ -11,7 +11,7 @@ export default function UserDetails({ name, id, onTriggerEdit }: Props) {
   const removeUser = useTrackingStore((state) => state.removeUser);
 
   return (
-    <div className="w-full max-w-md px-3 py-4 flex justify-between items-center border border-gray-200 rounded-lg shadow-sm my-3">
+    <div className="w-full max-w-md px-3 py-4 flex justify-between items-center border border-l-3 border-l-blue-500 border-gray-200 rounded-xl shadow-sm my-3">
       <div className="flex w-full gap-2 ml-2 items-center ">
         <UserRound
           className="text-blue-800 bg-blue-100 p-2 rounded-lg"
