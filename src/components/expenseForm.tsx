@@ -4,7 +4,7 @@ import PayerForm from "./payerForm";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTrackingStore, type PayerDetails } from "../store";
 import ErrorForm from "./errorForm";
-import Select from "react-select/creatable";
+import CreatableSelect from "react-select/creatable";
 import { Textarea } from "@headlessui/react";
 
 interface FormErrors {
@@ -125,7 +125,7 @@ export default function ExpenseForm() {
       <div className="flex flex-col p-4 gap-4">
         <div className="flex flex-col gap-2">
           <label className="text-sm font-semibold ">Category</label>
-          <Select
+          <CreatableSelect
             onBlur={onValidationCheck}
             isClearable
             className={`w-full border border-gray-300 rounded-xl shadow-sm focus:outline-none ${
@@ -135,7 +135,10 @@ export default function ExpenseForm() {
             } focus:border-transparent transition-all text-base`}
             placeholder="e.g., Dinner, Grocery"
             value={category ? { label: category, value: category } : null}
-            onCreateOption={(option) => setCategories([...categories, option])}
+            onCreateOption={(option) => {
+              setCategories([...categories, option]);
+              setCategory(option);
+            }}
             options={categories.map((category) => ({
               value: category.toLowerCase(),
               label: category,
@@ -216,7 +219,7 @@ export default function ExpenseForm() {
             <ErrorForm errorMsg="The total amount does not equal to the sum of individual payer amount" />
           )}
 
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3 mb-18">
             {payers?.map((payer, index) => (
               <div
                 key={index}
