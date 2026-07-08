@@ -4,7 +4,7 @@ import {
   DialogTitle,
   DialogBackdrop,
 } from "@headlessui/react";
-import React, { useState } from "react";
+import { useState } from "react";
 
 interface Props {
   title: string;
