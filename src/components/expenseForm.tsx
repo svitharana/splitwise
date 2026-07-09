@@ -30,7 +30,6 @@ export default function ExpenseForm() {
   ]);
 
   const [payers, setPayers] = useState<PayerDetails[]>([]);
-
   const [errors, setErrors] = useState<FormErrors>({
     category: false,
     amount: false,
@@ -126,33 +125,41 @@ export default function ExpenseForm() {
         <div className="flex flex-col gap-2">
           <label className="text-sm font-semibold ">Category</label>
           <CreatableSelect
-            onBlur={onValidationCheck}
+            onBlur={() => {
+              setTimeout(() => {
+                onValidationCheck();
+              }, 1000);
+            }}
             isClearable
-            className={`w-full border border-gray-300 rounded-xl shadow-sm focus:outline-none ${
+            className={`w-full border border-gray-300 py-1 rounded-xl shadow-sm focus:outline-none ${
               errors.category
                 ? "ring-2 ring-red-500 bg-red-50/30"
                 : "focus:ring-2 focus:ring-blue-500"
             } focus:border-transparent transition-all text-base`}
             placeholder="e.g., Dinner, Grocery"
-            value={category ? { label: category, value: category } : null}
+            value={
+              category
+                ? { label: category, value: category.toLowerCase() }
+                : null
+            }
             onCreateOption={(option) => {
               setCategories([...categories, option]);
               setCategory(option);
             }}
-            options={categories.map((category) => ({
-              value: category.toLowerCase(),
-              label: category,
+            options={categories.map((cat) => ({
+              value: cat.toLowerCase(),
+              label: cat,
             }))}
-            onChange={(category) => {
-              setCategory(category?.label || "");
+            onChange={(selectedOption) => {
+              setCategory(selectedOption?.label || "");
             }}
             styles={{
               control: (base) => ({
                 ...base,
                 borderRadius: "0.75rem",
-                paddingTop: "2px",
-                paddingBottom: "2px",
-                borderColor: "#d1d5db",
+
+                border: "none",
+                boxShadow: "none",
               }),
             }}
           />

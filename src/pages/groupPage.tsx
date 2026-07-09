@@ -19,7 +19,7 @@ export default function Group() {
   };
 
   return (
-    <div className="mx-5">
+    <div className="mx-5 h">
       <main className=" mt-10">
         {users.map((user) => (
           <UserDetails
@@ -30,7 +30,7 @@ export default function Group() {
         ))}
       </main>
       <UserDialog
-        title="Add User"
+        title={isEditMode ? "Edit User" : "Add User"}
         value={userName}
         onInputChange={setUserName}
         handleUser={(name) => {

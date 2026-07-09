@@ -4,6 +4,7 @@ import {
   DialogTitle,
   DialogBackdrop,
 } from "@headlessui/react";
+import { X } from "lucide-react";
 import { useState } from "react";
 
 interface Props {
@@ -46,42 +47,57 @@ export default function UserDialog({
       }}
     >
       <DialogBackdrop className="fixed inset-0 bg-black/30 backdrop-blur-sm" />
-      <div className="fixed inset-0 left-10 right-10">
-        <div className="flex min-h-full items-center justify-center ">
-          <DialogPanel className="w-full rounded-xl bg-white p-6 ">
-            <DialogTitle as="h3" className="font-medium text-center text-lg ">
-              {title}
-            </DialogTitle>
-            <input
-              required={true}
-              value={value}
-              placeholder="Name"
-              className={`w-full mt-3 py-2 px-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none   focus:border-transparent transition-all ${
-                error
-                  ? "ring-2 ring-red-500 bg-red-50/30"
-                  : "focus:ring-2 focus:ring-blue-500"
-              }`}
-              onChange={(e) => onInputChange(e.target.value)}
-            ></input>
-            {error && (
-              <span className="text-xs font-medium text-red-500">
-                Name cannot be empty
-              </span>
-            )}
+      <div className="flex min-h-full items-center justify-center fixed inset-0 left-10 right-10">
+        <DialogPanel className="w-full rounded-xl bg-white p-6 ">
+          <DialogTitle
+            as="h3"
+            className="font-medium text-center text-lg relative"
+          >
+            <X
+              size={16}
+              className="absolute right-0 text-slate-500"
+              onClick={() => setIsOpen(false)}
+            />
+            {title}
+          </DialogTitle>
+          <input
+            required={true}
+            value={value}
+            placeholder="Name"
+            className={`w-full mt-3 py-2 px-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none   focus:border-transparent transition-all ${
+              error
+                ? "ring-2 ring-red-500 bg-red-50/30"
+                : "focus:ring-2 focus:ring-blue-500"
+            }`}
+            onChange={(e) => onInputChange(e.target.value)}
+          ></input>
+          {error && (
+            <span className="text-xs font-medium text-red-500">
+              Name cannot be empty
+            </span>
+          )}
 
-            <div className="mt-4 flex justify-center">
-              <button
-                type="submit"
-                className="w-full bg-blue-600 active:bg-blue-700 text-white py-3 rounded-xl font-medium "
-                onClick={() => {
-                  onSubmit();
-                }}
-              >
-                Submit
-              </button>
-            </div>
-          </DialogPanel>
-        </div>
+          <div className="mt-4 flex justify-center gap-2">
+            <button
+              type="button"
+              className="w-1/2 bg-slate-400 active:bg-slate-500 text-white py-3 rounded-xl font-medium "
+              onClick={() => {
+                setIsOpen(false);
+              }}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="w-1/2 bg-blue-600 active:bg-blue-700 text-white py-3 rounded-xl font-medium "
+              onClick={() => {
+                onSubmit();
+              }}
+            >
+              Submit
+            </button>
+          </div>
+        </DialogPanel>
       </div>
     </Dialog>
   );

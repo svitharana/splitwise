@@ -12,7 +12,7 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Navigate to="/group" />,
+        element: <Navigate to="group" />,
       },
       {
         path: "/group",

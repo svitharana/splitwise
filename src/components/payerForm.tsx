@@ -44,7 +44,11 @@ export default function PayerForm({
         <div className="w-[50%]">
           <Select
             onBlur={onValidationCheck}
-            className="rounded-xl"
+            className={`w-full border border-gray-300  rounded-xl shadow-sm focus:outline-none ${
+              errors.payerEmpty
+                ? "ring-2 ring-red-500 bg-red-50/30"
+                : "focus:ring-2 focus:ring-blue-500"
+            } focus:border-transparent transition-all text-base`}
             placeholder="Payee"
             isSearchable={false}
             value={payerId ? { label: getUser(payerId), value: payerId } : null}
@@ -57,13 +61,11 @@ export default function PayerForm({
               control: (base) => ({
                 ...base,
                 borderRadius: "0.75rem",
-                paddingTop: "2px",
-                paddingBottom: "2px",
-                borderColor: "#d1d5db",
+                border: "none",
+                boxShadow: "none",
               }),
             }}
           />
-          {/* {errors.payerEmpty && <ErrorForm errorMsg="Please select an user" />} */}
         </div>
         <div className=" w-[50%]">
           <div className="relative">
@@ -76,13 +78,14 @@ export default function PayerForm({
               inputMode="decimal"
               placeholder="0.00"
               value={amount === 0 ? "" : amount}
-              className="w-full py-2 pl-11 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              className={`w-full py-2 pl-11 pr-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none ${
+                errors.amountInvalid
+                  ? "ring-2 ring-red-500 bg-red-50/30"
+                  : "focus:ring-2 focus:ring-blue-500"
+              } focus:border-transparent transition-all text-base`}
               onChange={(e) => onAmountUpdate(Number(e.target.value))}
             ></input>
           </div>
-          {/* {errors.amountInvalid && (
-          <ErrorForm errorMsg="Please enter a valid amount" />
-        )} */}
         </div>
         <X onClick={onRemovePayer} size={20} className="text-gray-500" />
       </form>
